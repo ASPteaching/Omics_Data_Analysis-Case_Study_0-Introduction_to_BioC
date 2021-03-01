@@ -1,0 +1,442 @@
+---
+title: "Bioconductor classes for working <br> with microarrays and similar data"
+author: "Alex Sanchez"
+date: ""
+output:
+ prettydoc::html_pretty:
+    theme: cayman
+    highlight: github
+    number_sections: true
+    toc: true
+    toc_depth: 2
+editor_options: 
+  chunk_output_type: console
+---
+
+```{r include=FALSE}
+require(knitr)
+opts_chunk$set(
+concordance=FALSE, echo=TRUE,  warning=FALSE, error=FALSE, message=FALSE)
+```
+
+# Introduction
+
+Many omics data, once they have been pre-processed, can be stored as numeric data that can be represented as the typical "data matrix". This matrix is, however, usually transposed, that is genes (variables) are in rows and samples (individuals) are in columns.
+
+A person who is familiar with statistics and R can therefore explore an omics dataset using standard univariate and multivariate statistical methods.
+
+In practice, omics datasets have more information than just what can be stored in a table. This can be annotation data, multiple covariates other than what is in the column names, or information about th eexperimental design or simply the experiment.
+
+Even for a person who is proficient with software, managing simultaneously distinct objects, that contain related information, can be "tricky" and there is always a danger that the distinct components lose synchronization. For instance removing one sample from the expression matrix requires that the corresponding information is removed or updated in the covariates table. And an error at doing this can yield different problems.
+
+In this lab we introduce the <tt>ExpressionSet</tt> class as an option for managing all these pieces of information simultaneously, which not only simplifies the process, but also prevents mistakes derived from lack of consistency between the parts.
+
+The lab has three parts
+
+1. Exploring microarray data.
+
+2. Introducing bioconductor classes to store and access microarray data.
+
+3. Using the `GEOquery` bioconductor  package to obtain microarray data.
+
+
+# Exploring microarray data. A naïve (simple) approach
+
+In this section we present a real microarray dataset and see how this can be explored using standard `R` functions.
+
+For this exercise we will be using data from a small microarray study which has been deposited in the _Gene Expression Omnibus Database_ with the identifier "GSE58435". You can browse all the information from this link:<br>
+[https://www.ncbi.nlm.nih.gov/geo/query/acc.cgi?acc=GSE58435](https://www.ncbi.nlm.nih.gov/geo/query/acc.cgi?acc=GSE58435)
+
+This study was performed using Affymetryx microarrays (type "HGU133plus2") withe the objective of identifying genes that may play a role in the pathophysiologic changes that are seen in individuals with Turner syndrome, a common sex chromosome aneuploidy, which is associated with malformations.
+
+A preprocessed data matrix is available from the GEO web site, but given that downloading it may require using FTP software, it is provided jointly with this document.
+
+In the following we assume that the matrix has been downloaded and extracted (it is provided as a compressed ".gz") file) in the the working directory.
+
+## Loading the data
+
+The data matrix recovered from the web contains some general information first and the expression values for each sample after line 67.
+
+The first thing to do is to separate both informations. This can be done using the <tt>read.table()</tt> command combined with `skip` and the `nrow` arguments.
+
+Because the last line of the file is a "closing line" with no numbers in it (check it using a text editor) we also have to skip that line.
+
+```{r readData, print=FALSE, echo=TRUE}
+# setwd(" ") # Put  here your working directory
+datadir <- "."
+info <-readLines(file.path(datadir,"GSE58435_series_matrix.txt"), n=70)
+rows2read <- 54743 -66 -2
+x <-read.table(file.path(datadir,"GSE58435_series_matrix.txt"), skip=66, header=TRUE, sep="\t",row.names=1, nrows = rows2read)
+```
+
+Looking at the information contained in the header or in the GEO web site
+it can be seen that the first five samples correspond to Turner syndrome and the remaining 5 to control samples.
+
+```{r relabelX}
+dim(x)
+colnames(x) <- c(paste("Turner",1:5, sep="_"), paste("Control",1:5, sep="_"))
+colnames(x)
+head(x)
+```
+
+## Exploratory analysis with univariate statistics
+
+A first glimpse of the dataset can be obtained using basic summary statistics and basic plots.
+
+```{r summarize, print=FALSE,echo=TRUE}
+round(apply(x,2, summary),3)  # Column-wise summary statistics,3)
+```
+
+A boxplot of the data shows that values are assymetrically distributed
+
+```{r boxplot1,fig.align='center', fig.cap='',echo=F}
+boxplot(x, col=c(rep("red", 5) , rep("green", 5)),main="Expression values for\n 5 Turner  and 5 Control samples",
+    xlab="Slides",
+    ylab="Expression", las=2, cex.axis=0.7, cex.main=0.7)
+abline(0,0, col="black")
+```
+
+## Data visualization using unsupervised techniques (PCA, Clustering)
+
+A very useful visualization for omics data obtained by computing \"sample-wise\" principal components and plotting the first two components.
+
+If samples are more similar within groups that beteen this is usually reflected in these plots. For the same reason they can also be useful if the goal is detect unusual samples or batch effects.
+
+Start by computing prncipal components and loadings.
+```{r pca}
+pcX<-prcomp(t(x), scale=TRUE) 
+loads<- round(pcX$sdev^2/sum(pcX$sdev^2)*100,1)
+```
+
+Then plot the first two components.
+
+```{r plotPCA, fig=TRUE}
+xlab<-c(paste("PC1",loads[1],"%"))
+ylab<-c(paste("PC2",loads[2],"%"))
+plot(pcX$x[,1:2],xlab=xlab,ylab=ylab, xlim=c(-150, 150))
+title("Principal components (PCA)")
+text(pcX$x[,1],pcX$x[,2],colnames(x), pos=4)
+```
+
+Alternatively a hierarchichal clustering can be applied to detect any expected (or unexpected grouping of the samples).
+
+
+```{r codedendrogramcomputeHC}
+clust.euclid.average <- hclust(dist(t(x)),method="ward.D2")
+```
+
+```{r plotdendrograms, fig=T}
+plot(clust.euclid.average, hang=-1)
+```
+
+Both PCA and clustering suggest that the differences between the groups are not very clear which can be attributed to the fact that gene expression may not be the best surrogate for the effects of Turner Syndrome.
+
+## Exercises
+
+This exercises are intended for people who is starting to work with Bioconductor.
+
+1. Go to the website of the Gene Expression Omnibus and Look for a comparative experiment that uses a small number of arrays and try to understand how the information is organized.
+
+2. Download the expressions and the covariate information (both stored in the "Series Matrix File(s)"). Notice that __you need a ftp program such as filezilla to download the file__
+
+3. Reproduce the exploration using the dataset you have downloaded. Feel free to complement it with any additional plot or summary which you fiond interesting.
+
+# Bioconductor classes to manage micrarray and similar data
+
+
+## The OOP paradigm
+
+Object-oriented design provides a convenient way to represent data structures and actions performed on them.
+
+* A <em>class</em> can be tought of as a template, a description of what constitutes each instance of the class.
+* An <em>instance</em> of a class is a realization of what describes the class.
+* Attributes of a class are data components, and methods of a class are functions, or actions the instance/class is capable of.
+
+The {\it R} language has several implementations of the OO paradigm but, in spite of its success in other languages, it is relatively minoritary.
+
+
+## Bioconductor Classes
+
+One case where OOP has succeeded in R or, at least, is more used than in others is in the Bioconductor Project ([bioconductor.org](http://bioconductor.org)). In Bioconductor we have to deal with complex data structures such as the results of a microarray experiment, a genome and its annotation or a complex multi-omics dataset. These are situations where using OOP to create classes to manage those complex types of data is clearly appropriate.
+
+
+## The `Biobase` package
+
+The `R`package{Biobase} package implements one of the best known Bioconductor classes: <tt>ExpressionSet</tt>. It was originally intended to contain microarray data and information on the study that generated them and it has become a standard for similar data structures.
+
+```{r loadPackage}
+require(Biobase)
+```
+
+Figure @ref(ExpressionSet) shows the structure of this class. It is essentially a <em>container</em> that has distinct slots to store some of the most usual components in an omics dataset.
+
+
+```{r ExpressionSet, fig.cap="Structure of the <tt>ExpressionSet</tt> class, showing its slots and their meaning. Reproduced from Klaus, B., & Reisenauer, S. (2018)", echo=FALSE}
+knitr::include_graphics("images/Structure-of-Bioconductors-ExpressionSet-class.png")
+```
+
+The advantage of the OOP approach is that, if a new type of omics data needs a similar but different structure it can be created using inheritance, which means much less work than and better consistency than creating it from scratch.
+
+
+## A toy dataset
+
+For the purpose of this lab we are going to simulate a toy (fake) dataset that consists of the following:
+
+* <b>Expression values</b> A matrix of 30 rows and 10 columns containing expression values from a gene expression experiment. Matrix column names are sample identifiers
+* <b>Covariates</b> A table of ten rows and four columns containing the sample identifiers, the treatment groups and the age and sex of individuals.
+\item{Genes} Information about the features contained in the data. May be the gene names, the probeset identifiers etc. Usually stored in a character vector but may also be a table with distinct annotations per feature.
+* <b>Information about the experiment</b> Additional information about the study, such as the authors and their contact details or the title and url of the study that originated them.
+
+```{r simulateData}
+expressionValues <- matrix (rnorm (300), nrow=30)
+colnames(expressionValues) <- paste0("sample",1:10)
+head(expressionValues)
+```
+
+**VERY IMPORTANT**: To create the ExpressionSet the following has to be verified:
+
+- The names of the columns of the object that contains the expressions, that will be stored in `assayData`
+- must match the names of the rows of the object that contains the covariates, that will be stored in `phenoData`.
+
+In this example it is saved in the variable `sampleNames` but this field will be used as the *name of the rows*, not as another column
+
+```{r simulateCovariates}
+targets <- data.frame(sampleNames = paste0("sample",1:10),
+                      group=c(paste0("CTL",1:5),paste0("TR",1:5)),
+                      age = rpois(10, 30), 
+                      sex=as.factor(sample(c("Male", "Female"),10,replace=TRUE)),
+                      row.names=1)
+head(targets, n=10)
+```
+
+```{r simulateGeneInfo}
+myGenes <-  paste0("gene",1:30)
+```
+
+```{r simulateInfo}
+myInfo=list(myName="Alex Sanchez", myLab="Bioinformatics Lab",
+          myContact="alex@somemail.com", myTitle="Practical Exercise on ExpressionSets")
+show(myInfo)
+```
+
+Having data stored in this way is usually enough for most of the analyes we may want to do.
+The only unconvenient comes from the fact that the information about the same individuals is in separate R objects so that, for certain applications, we will have to access several objects and <em>assume they are well related</em>.
+
+For example if we want to make a principal components analysis and plot the groups by treatment we need to use both ``expressionValues" and ``targets."
+
+```{r }
+pcs <- prcomp(expressionValues)
+names(pcs)
+barplot(pcs$sdev)
+plot(pcs$rotation[,1], pcs$rotation[,2], main="Representation of first two principal components")
+text(pcs$rotation[,1], pcs$rotation[,2], targets$group, cex=0.8, pos=3)
+```
+
+Or, if we sort the genes from most to least variable and whant to see which are the top variable genes. We need to use both objects ``expressionValues" and ``myGenes" assuming they are well linked:
+
+```{r }
+variab <- apply(expressionValues, 1, sd)
+orderedGenes <- myGenes[order(variab, decreasing=TRUE)]
+head(variab[order(variab, decreasing=TRUE)])
+head(orderedGenes)
+```
+
+Imagine we are informed that individual has to be removed. We have to do it in \"expressionValues\" and \"targets\".
+
+```{r subsetExpressions}
+newExpress<- expressionValues[,-9]
+newTargets <- targets[-9,]
+wrongNewTargets <- targets [-10,]
+```
+                                                                             It is relatively easy to make an unnoticeable mistake in removing unrelated values from the data matrix and the targets table. If instead of removing individual 9 we remove individual 10 it may be  difficult to realize what has happened unless it causes a clear unconsistency!
+
+## Creating and using objects of class ExpressionSet
+
+In order to use a class we need to <em>instantiate</em> it, that is we need to create an object of this class.
+
+This can be done using the generic constructor <tt>new</tt> or with the function <tt>ExpressionSet</tt>.
+
+Both the constructor or the function require a series of parameters which roughly correspond to the slots of the class (type <tt>? ExpressionSet</tt> to see a list of compulsory and optional arguments).
+
+In the following subsections we describe how to create an <tt>ExpressionSet</tt> using the components of the toy dataset. Some of the elements will directly be the element in the toy dataset, such as the expression  matrix. For others such as the covariates or the experiment information, specific classes have been introduced so that we have to instantiate these classes first and then use the the objects created to create the <tt>ExpressionSet</tt> object.
+
+### Slot <tt>AssayData</tt>
+
+The main element, and indeed the only one to be provided to create an <tt>ExpressionSet</tt>, is <tt>AssayData</tt>. For our practical purposes it can be seen as a matrix with as many rows as genes or generically \"features\" and as many columns as samples or individuals.
+
+
+```{r creaExpressionSet1}
+myEset <- ExpressionSet(expressionValues)
+class(myEset)
+show(myEset)
+```
+
+### Information about covariates
+
+Covariates, such as those contained in the \"targets\" data frame are not included in the \"ExpressionSet\" \"as.is\". Instead we have first to create an intermediate object of class <tt>AnnotatedDataFrame</tt>.
+
+Class `R`class{AnnotatedDataFrame} is intended to contain a data frame where we may want to provide enhanced information for columns, i.e. besides the short column names, longer labels to describe them better.
+
+The information about covariates, contained in an instance of class <tt>AnnotatedDataFrame</tt>, is stored in the slot <tt>phenoData</tt>.
+
+```{r AnnotatedDataFrame2}
+columnDesc <-  data.frame(labelDescription= c("Treatment/Control", 
+                                                "Age at disease onset", 
+                                                "Sex of patient (Male/Female"))
+myAnnotDF <- new("AnnotatedDataFrame", data=targets, varMetadata= columnDesc)
+show(myAnnotDF)
+```
+Notice that we have not included a label for sample names because this information is not a column of the `phenoData` object.
+
+Once we have an <tt>AnnotatedDataFrame</tt> we can add it to the <tt>ExpressionSet</tt>
+
+```{r }
+phenoData(myEset) <- myAnnotDF
+```
+
+Alternatively we could have created the<tt>AnnotatedDataFrame</tt> object first and then create the <tt>ExpressionSet</tt> object with both the expression values and the covariates. In this case it would be required that the expression matrix colum names are the same as the targets row names.
+
+```{r creaEset2}
+myEset <- ExpressionSet(assayData=expressionValues, phenoData=myAnnotDF)
+show(myEset)
+```
+
+
+### Adding information about features
+
+Similarly to what we do to store information about covariates, information about genes (or generically \"features\") may be stored in the optional slot <tt>featureData</tt> as an <tt>AnnotatedDataFrame</tt>.
+
+The number of rows in <tt>featureData</tt> must match the number of rows in <tt>assayData.</tt> Row names of <tt>featureData</tt> must match row names of the matrix / matrices in assayData.
+
+This slot is good if one has an annotations table that one wishes to store and manage jointly with the other values. ALternatively we can simple store the names of the features using a character vector in the slot
+<tt>featureNames</tt>.
+
+```{r }
+myEset <- ExpressionSet(assayData=expressionValues,
+                        phenoData=myAnnotDF,
+                        featureNames =myGenes)
+# show(myEset)
+```
+
+### Storing information about the experiment
+
+In a similar way to what happens with the <tt>AnnotatedDataFrame</tt> class there has been developed a class to store information about the experiment. The structure of the class, called <tt>MIAME</tt> follows the structur of what has been described as the \"Minimum Information About a Microarray Experiment\" see [www.ncbi.nlm.nih.gov/pubmed/11726920](https://www.ncbi.nlm.nih.gov/pubmed/11726920)
+
+This is useful information but it is clearly optional for data analysis.
+
+```{r label=MIAME}
+myDesc <- new("MIAME", name= myInfo[["myName"]],
+            lab= myInfo[["myLab"]],
+            contact= myInfo[["myContact"]] ,
+            title=myInfo[["myTitle"]])
+print(myDesc)
+```
+
+Again we could add this object to the <tt>ExpressionSet</tt> or use it when creating it from scratch.
+
+```{r }
+myEset <- ExpressionSet(assayData=expressionValues,
+                        phenoData=myAnnotDF,
+                        fetureNames =myGenes,
+                        experimentData = myDesc)
+# show(myEset)
+```
+
+
+
+## Using objects of class <tt>ExpressionSet</tt>
+
+The advantage of working with <tt>ExpressionSets</tt> lies in the fact that action on the objects are done in such a way that its consistency is ensured. That means for instance that if we subset the <tt>ExpressionSet</tt> it is automatically done on the columns of the expressions and on the rows of the covariates and it is no possible that a distinct row/column are removed.
+
+The following lines illustrate some management of data in an <tt>ExpressionSet</tt>.
+
+### Accessing Slot values
+
+ Notice that to access the values we use special functions called \"accessors\" instead of the dollar symbol (which would not work for classes) or the @ symbol that does substitute the  \$ symbol.
+
+ Notice also that, in order to access the data frame contained in the <tt>phenoData</tt> slot, which is an <tt>AnnotatedDataFrame</tt>, we need to use two accessors: <tt>phenoData</tt> to access the <tt>ExpressionSet</tt>'s<tt>phenoData</tt> slot and <tt>pData</tt> to access the <tt>data</tt> slot in it. It is strange until you get used to it!
+
+```{r usingExpressionSets}
+dim(exprs(myEset))
+class(phenoData(myEset))
+class(pData(phenoData(myEset)))
+head(pData(phenoData(myEset)))
+head(pData(myEset))
+```
+
+### Subsetting <tt>ExpressionSet
+
+This is where the interest of using <tt>ExpressionSets</tt> is most clearly realized.
+
+The <tt>ExpressionSet</tt> object has been cleverly-designed to make data manipulation consistent with other basic R object types. For example, creating a subset of an ExpressionsSet will subset the expression
+matrix, sample information and feature annotation (if available) simultaneously in an appropriate manner. The user does not need to know how the object is represented \"under-the-hood\". In effect, we can treat the <tt>ExpressionSet</tt> as if it is a standard R data frame
+
+```{r }
+smallEset <- myEset[1:15,c(1:3,6:8)]
+dim(exprs(smallEset))
+dim(pData(smallEset))
+head(pData(smallEset))
+all(colnames(exprs(smallEset))==rownames(pData(smallEset)))
+```
+
+We can for instance create a new dataset for all individuals younger than 30 or for all females without having to worry about doing it in every component.
+
+```{r }
+youngEset <- myEset[,pData(myEset)$age<30]
+dim(exprs(youngEset))
+head(pData(youngEset))
+```
+
+
+## Exercises
+       
+4. Create an `ExpressionSet` object to contain the data for the example study using the data you have downloaded and used in the first section.
+That is, adapt the steps taken to creat the ExpressionSet with the toy dataset to create one with the data from the study.
+
+5. Do some subsetting and check the consistency of the results obtained. For example remove some sample from the covariates slot (the `phenoData`) and see if it is automatically removed from the expression matrix`.
+
+6. Check that you are able to reproduce the analysis in the first part accessing the components of the object created.
+
+
+# Using the `GEOquery` bioconductor  package to obtain microarray data
+
+## Overview of GEO
+
+The NCBI Gene Expression Omnibus (GEO) serves as a public repository for a wide range of high-throughput experimental data. These data include single and dual channel microarray-based experiments measuring mRNA, genomic DNA, and protein abundance, as well as non-array techniques such as serial analysis of gene expression (SAGE), mass spectrometry proteomic data, and high-throughput sequencing data.
+
+At the most basic level of organization of GEO, there are four basic entity types. The first three (Sample, Platform, and Series) are supplied by users; the fourth, the dataset, is compiled and curated by GEO staff from the user-submitted data. See the GEO home page for more information.
+
+## Getting data from GEO
+
+Getting data from GEO is really quite easy. There is only one command that is needed, <tt>getGEO</tt>.
+
+This one function interprets its input to determine how to get the data from GEO and then parse the data into useful R data structures. Usage is quite simple.
+
+```{r }
+if (!require(GEOquery)) {
+  BiocManager::install("GEOquery")
+}
+require(GEOquery)
+gse <- getGEO("GSE58435")
+class(gse)
+names(gse)
+gse[[1]]
+esetFromGEO <- gse[[1]]
+```
+
+The downloaded object is an <tt>ExpressionSet</tt> stored in a list. This means that instead of doing the painful process of creating the object step by step one can simply download it from GEO and start using it as in the previous section.
+
+
+## Exercises
+
+7. Last, create an `ExpressionSet` object to contain the data for this study but _instead of creating it from Scratch_ use the `getGEO` function of the Bioconductor package `GEOquery` as described in the second part of the document
+
+
+# References
+
+- Davis, S., & Meltzer, P. (2007). GEOquery: a bridge between the Gene Expression Omnibus (GEO) and BioConductor. Bioinformatics, 14, 1846–1847.
+
+- Klaus, B., & Reisenauer, S. (2018). An end to end workflow for differential gene expression using Affymetrix microarrays [version 2; referees: 2 approved]. F1000Research, 5, 1384. https://doi.org/10.12688/f1000research.8967.2
+
+- Clough, E., & Barrett, T. (2016). The Gene Expression Omnibus Database. In Methods in molecular biology (Clifton, N.J.) (Vol. 1418, pp. 93–110). https://doi.org/10.1007/978-1-4939-3578-9_5
+
