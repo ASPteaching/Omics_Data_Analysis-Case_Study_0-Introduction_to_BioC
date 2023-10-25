@@ -177,4 +177,14 @@ sessionInfo()
 ## 
 ## quarto::quarto_render(input="Introduction_2_Bioc_classes_4_microarrays.qmd",
 ##                       output_format="all")
+## 
+## # An "index.html" file is created to allow visualitzation in the web using github pages
+## file.copy(from="Introduction_2_Bioc_classes_4_microarrays.html", to="index.html", overwrite=TRUE)
+
+
+
+## # The R code for the document can be extracted from the document with the
+## # knitr::purl() command
+## 
+## knitr::purl("Introduction_2_Bioc_classes_4_microarrays.qmd")
 

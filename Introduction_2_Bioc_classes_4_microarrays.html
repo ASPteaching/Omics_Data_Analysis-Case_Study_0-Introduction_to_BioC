@@ -242,20 +242,20 @@ Attaching package: 'BiocGenerics'</code></pre>
 <span id="cb7-2"><a href="#cb7-2" aria-hidden="true" tabindex="-1"></a><span class="fu">colnames</span>(expressionValues) <span class="ot">&lt;-</span> <span class="fu">paste0</span>(<span class="st">"sample"</span>,<span class="dv">1</span><span class="sc">:</span><span class="dv">10</span>)</span>
 <span id="cb7-3"><a href="#cb7-3" aria-hidden="true" tabindex="-1"></a><span class="fu">head</span>(expressionValues)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
-<pre><code>        sample1    sample2    sample3    sample4    sample5     sample6
-[1,] -0.6610552 -1.6798036  0.9470284 0.44113229 -0.2332673 -0.09186491
-[2,] -0.0985240  1.2644444 -0.6367506 2.06315618 -1.0520496 -0.67974853
-[3,]  1.3092870 -1.1018402 -0.4816548 0.10122105 -0.2182987  0.38700891
-[4,]  0.7713470  0.2889271  0.5634550 0.97741843  1.9755665  0.07655590
-[5,] -0.2710523 -0.5815316 -0.8636189 0.01145263  0.5127424  1.54798833
-[6,]  0.5139844  1.0098480 -1.8967610 2.04650146 -1.6318436  0.30824449
-         sample7    sample8     sample9   sample10
-[1,] -0.79714191  1.1892812 -0.43795415  0.7075979
-[2,] -0.15793702 -0.8158523 -1.23273681 -1.0321456
-[3,]  0.04762477 -0.1481989 -0.60542891 -0.2744777
-[4,]  2.00195304 -2.5485705 -0.08245497  0.9580351
-[5,]  0.14664609  0.6834646  0.97470388  2.1611361
-[6,] -2.36858585  0.3388213  0.92938919 -1.7269205</code></pre>
+<pre><code>        sample1    sample2    sample3     sample4     sample5    sample6
+[1,]  0.6785002 -0.0635438 -1.0439799  1.03071329 -0.60288969  0.8493549
+[2,] -0.8776747 -0.3379674  1.9339337 -2.14144307 -0.20595697 -1.0017975
+[3,] -1.6200826 -1.3398812  0.1350021  1.05724205 -1.38579702  1.1391976
+[4,] -0.2984916 -1.3392925 -0.2949142  1.31154665  0.41429588 -0.5494369
+[5,] -0.5766942  0.7873406 -0.7587983 -1.10409961 -0.73114629 -0.5637812
+[6,]  0.4722258  1.0308723  1.1459915 -0.06893435  0.06825962 -0.2828369
+        sample7    sample8    sample9    sample10
+[1,] -1.4592096  0.3517841 -1.0367017 -0.27212074
+[2,] -1.7721624 -0.5934538  1.1574133 -0.04465655
+[3,] -0.4334311  0.9061608  0.3660720 -0.91355941
+[4,]  0.9825078 -0.4240480  2.4211547 -0.48217415
+[5,]  1.4460612 -0.6622911  0.1296784  1.82837951
+[6,]  1.4610896 -0.3032764  0.3617234 -0.94770630</code></pre>
 </div>
 </div>
 <p><strong>VERY IMPORTANT</strong>: To create the ExpressionSet the following has to be verified:</p>
@@ -273,16 +273,16 @@ Attaching package: 'BiocGenerics'</code></pre>
 <span id="cb9-6"><a href="#cb9-6" aria-hidden="true" tabindex="-1"></a><span class="fu">head</span>(targets, <span class="at">n=</span><span class="dv">10</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>         group age    sex
-sample1   CTL1  21 Female
-sample2   CTL2  33 Female
-sample3   CTL3  33   Male
-sample4   CTL4  31 Female
-sample5   CTL5  35   Male
-sample6    TR1  33   Male
-sample7    TR2  25 Female
-sample8    TR3  30   Male
-sample9    TR4  24   Male
-sample10   TR5  30 Female</code></pre>
+sample1   CTL1  27 Female
+sample2   CTL2  21 Female
+sample3   CTL3  24 Female
+sample4   CTL4  25   Male
+sample5   CTL5  22 Female
+sample6    TR1  29 Female
+sample7    TR2  23 Female
+sample8    TR3  28   Male
+sample9    TR4  36 Female
+sample10   TR5  29 Female</code></pre>
 </div>
 </div>
 <div class="cell">
@@ -333,11 +333,11 @@ $myTitle
 <span id="cb18-2"><a href="#cb18-2" aria-hidden="true" tabindex="-1"></a>orderedGenes <span class="ot">&lt;-</span> myGenes[<span class="fu">order</span>(variab, <span class="at">decreasing=</span><span class="cn">TRUE</span>)]</span>
 <span id="cb18-3"><a href="#cb18-3" aria-hidden="true" tabindex="-1"></a><span class="fu">head</span>(variab[<span class="fu">order</span>(variab, <span class="at">decreasing=</span><span class="cn">TRUE</span>)])</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
-<pre><code>[1] 1.519688 1.377983 1.315724 1.282593 1.264880 1.256880</code></pre>
+<pre><code>[1] 1.629388 1.537978 1.256084 1.228477 1.151715 1.131876</code></pre>
 </div>
 <div class="sourceCode cell-code" id="cb20"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb20-1"><a href="#cb20-1" aria-hidden="true" tabindex="-1"></a><span class="fu">head</span>(orderedGenes)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
-<pre><code>[1] "gene6"  "gene11" "gene20" "gene4"  "gene13" "gene12"</code></pre>
+<pre><code>[1] "gene22" "gene10" "gene15" "gene2"  "gene7"  "gene17"</code></pre>
 </div>
 </div>
 <p>Imagine we are informed that individual has to be removed. We have to do it in “expressionValues” and “targets”.</p>
@@ -489,22 +489,22 @@ attr(,"package")
 <div class="sourceCode cell-code" id="cb42"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb42-1"><a href="#cb42-1" aria-hidden="true" tabindex="-1"></a><span class="fu">head</span>(<span class="fu">pData</span>(<span class="fu">phenoData</span>(myEset)))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>        group age    sex
-sample1  CTL1  21 Female
-sample2  CTL2  33 Female
-sample3  CTL3  33   Male
-sample4  CTL4  31 Female
-sample5  CTL5  35   Male
-sample6   TR1  33   Male</code></pre>
+sample1  CTL1  27 Female
+sample2  CTL2  21 Female
+sample3  CTL3  24 Female
+sample4  CTL4  25   Male
+sample5  CTL5  22 Female
+sample6   TR1  29 Female</code></pre>
 </div>
 <div class="sourceCode cell-code" id="cb44"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb44-1"><a href="#cb44-1" aria-hidden="true" tabindex="-1"></a><span class="fu">head</span>(<span class="fu">pData</span>(myEset))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>        group age    sex
-sample1  CTL1  21 Female
-sample2  CTL2  33 Female
-sample3  CTL3  33   Male
-sample4  CTL4  31 Female
-sample5  CTL5  35   Male
-sample6   TR1  33   Male</code></pre>
+sample1  CTL1  27 Female
+sample2  CTL2  21 Female
+sample3  CTL3  24 Female
+sample4  CTL4  25   Male
+sample5  CTL5  22 Female
+sample6   TR1  29 Female</code></pre>
 </div>
 </div>
 </section>
@@ -525,12 +525,12 @@ sample6   TR1  33   Male</code></pre>
 <div class="sourceCode cell-code" id="cb50"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb50-1"><a href="#cb50-1" aria-hidden="true" tabindex="-1"></a><span class="fu">head</span>(<span class="fu">pData</span>(smallEset))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>        group age    sex
-sample1  CTL1  21 Female
-sample2  CTL2  33 Female
-sample3  CTL3  33   Male
-sample6   TR1  33   Male
-sample7   TR2  25 Female
-sample8   TR3  30   Male</code></pre>
+sample1  CTL1  27 Female
+sample2  CTL2  21 Female
+sample3  CTL3  24 Female
+sample6   TR1  29 Female
+sample7   TR2  23 Female
+sample8   TR3  28   Male</code></pre>
 </div>
 <div class="sourceCode cell-code" id="cb52"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb52-1"><a href="#cb52-1" aria-hidden="true" tabindex="-1"></a><span class="fu">all</span>(<span class="fu">colnames</span>(<span class="fu">exprs</span>(smallEset))<span class="sc">==</span><span class="fu">rownames</span>(<span class="fu">pData</span>(smallEset)))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
@@ -542,14 +542,17 @@ sample8   TR3  30   Male</code></pre>
 <div class="sourceCode cell-code" id="cb54"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb54-1"><a href="#cb54-1" aria-hidden="true" tabindex="-1"></a>youngEset <span class="ot">&lt;-</span> myEset[,<span class="fu">pData</span>(myEset)<span class="sc">$</span>age<span class="sc">&lt;</span><span class="dv">30</span>]</span>
 <span id="cb54-2"><a href="#cb54-2" aria-hidden="true" tabindex="-1"></a><span class="fu">dim</span>(<span class="fu">exprs</span>(youngEset))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
-<pre><code>[1] 30  3</code></pre>
+<pre><code>[1] 30  9</code></pre>
 </div>
 <div class="sourceCode cell-code" id="cb56"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb56-1"><a href="#cb56-1" aria-hidden="true" tabindex="-1"></a><span class="fu">head</span>(<span class="fu">pData</span>(youngEset))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>        group age    sex
-sample1  CTL1  21 Female
-sample7   TR2  25 Female
-sample9   TR4  24   Male</code></pre>
+sample1  CTL1  27 Female
+sample2  CTL2  21 Female
+sample3  CTL3  24 Female
+sample4  CTL4  25   Male
+sample5  CTL5  22 Female
+sample6   TR1  29 Female</code></pre>
 </div>
 </div>
 </section>
@@ -715,7 +718,7 @@ $institute
 <div class="sourceCode cell-code" id="cb84"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb84-1"><a href="#cb84-1" aria-hidden="true" tabindex="-1"></a>eset <span class="ot">&lt;-</span> <span class="fu">GDS2eSet</span>(gds,<span class="at">do.log2=</span><span class="cn">FALSE</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stderr">
 <pre><code>Using locally cached version of GPL6246 found here:
-C:\Users\Usuario\AppData\Local\Temp\RtmpGIhq0d/GPL6246.annot.gz </code></pre>
+C:\Users\Usuario\AppData\Local\Temp\Rtmpy6jYUL/GPL6246.annot.gz </code></pre>
 </div>
 <div class="sourceCode cell-code" id="cb86"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb86-1"><a href="#cb86-1" aria-hidden="true" tabindex="-1"></a>eset</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
@@ -804,7 +807,7 @@ loaded via a namespace (and not attached):
 <span id="cb90-6"><a href="#cb90-6" aria-hidden="true" tabindex="-1"></a>                      <span class="at">output_format=</span><span class="st">"all"</span>)</span>
 <span id="cb90-7"><a href="#cb90-7" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb90-8"><a href="#cb90-8" aria-hidden="true" tabindex="-1"></a><span class="co"># An "index.html" file is created to allow visualitzation in the web using github pages</span></span>
-<span id="cb90-9"><a href="#cb90-9" aria-hidden="true" tabindex="-1"></a><span class="fu">file.copy</span>(<span class="at">from=</span><span class="st">"Introduction_2_Bioc_classes_4_microarrays.html"</span>, <span class="at">to=</span><span class="st">"index.html"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<span id="cb90-9"><a href="#cb90-9" aria-hidden="true" tabindex="-1"></a><span class="fu">file.copy</span>(<span class="at">from=</span><span class="st">"Introduction_2_Bioc_classes_4_microarrays.html"</span>, <span class="at">to=</span><span class="st">"index.html"</span>, <span class="at">overwrite=</span><span class="cn">TRUE</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
 <div class="cell">
 <div class="sourceCode cell-code" id="cb91"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb91-1"><a href="#cb91-1" aria-hidden="true" tabindex="-1"></a><span class="co"># The R code for the document can be extracted from the document with the </span></span>
