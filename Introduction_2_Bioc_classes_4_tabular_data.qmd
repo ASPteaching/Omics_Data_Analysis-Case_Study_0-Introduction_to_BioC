@@ -26,8 +26,10 @@ knit:
 # reference-location: margin
 editor_options: 
   chunk_output_type: console
+editor: 
+  markdown: 
+    wrap: 72
 ---
-
 
 # Introduction
 
@@ -60,16 +62,14 @@ lack of consistency between the parts.
 
 The lab has two parts
 
-1.  Introduces bioconductor classes to store and access microarray
-    data.
+1.  Introduces bioconductor classes to store and access microarray data.
 
-2.  Shows how to use the `GEOquery` bioconductor package to download microarray data into an analysis-ready form.
-
+2.  Shows how to use the `GEOquery` bioconductor package to download
+    microarray data into an analysis-ready form.
 
 ## Availability
 
 This document can be re-created using the repository
-
 
 # Bioconductor classes to manage micrarray and similar data
 
@@ -85,8 +85,8 @@ structures and actions performed on them.
 -   Attributes of a class are data components, and methods of a class
     are functions, or actions the instance/class is capable of.
 
-The R language has several implementations of the OO paradigm but,
-in spite of its success in other languages, it is relatively minoritary.
+The R language has several implementations of the OO paradigm but, in
+spite of its success in other languages, it is relatively minoritary.
 
 ## Bioconductor Classes
 
@@ -105,7 +105,7 @@ Bioconductor classes: <tt>ExpressionSet</tt>. It was originally intended
 to contain microarray data and information on the study that generated
 them and it has become a standard for similar data structures.
 
-```{r loadPackage}
+```{r loadBiobase}
 library(Biobase)
 ```
 
@@ -135,10 +135,10 @@ dataset that consists of the following:
     the sample identifiers, the treatment groups and the age and sex of
     individuals.
 
--   <b>Genes</b> Information about the features contained in the data. May be
-    the gene names, the probeset identifiers etc. Usually stored in a
-    character vector but may also be a table with distinct annotations
-    per feature.
+-   <b>Genes</b> Information about the features contained in the data.
+    May be the gene names, the probeset identifiers etc. Usually stored
+    in a character vector but may also be a table with distinct
+    annotations per feature.
 
 -   <b>Information about the experiment</b> Additional information about
     the study, such as the authors and their contact details or the
@@ -221,7 +221,10 @@ newTargets <- targets[-9,]
 wrongNewTargets <- targets [-10,]
 ```
 
-It is relatively easy to make an unnoticeable mistake in removing unrelated values from the data matrix and the targets table. If instead of removing individual 9 we remove individual 10 it may be  difficult to realize what has happened unless it causes a clear unconsistency!
+It is relatively easy to make an unnoticeable mistake in removing
+unrelated values from the data matrix and the targets table. If instead
+of removing individual 9 we remove individual 10 it may be difficult to
+realize what has happened unless it causes a clear unconsistency!
 
 ## Creating and using objects of class ExpressionSet
 
@@ -432,13 +435,21 @@ head(pData(youngEset))
 
 # The `GEOquery` package to download data from GEO
 
-The NCBI Gene Expression Omnibus (GEO) serves as a public repository for a wide range of high-throughput experimental data. These data include single and dual channel microarray-based experiments measuring mRNA, genomic DNA, and protein abundance, as well as non-array techniques such as serial analysis of gene expression (SAGE), mass spectrometry proteomic data, and high-throughput sequencing data.
+The NCBI Gene Expression Omnibus (GEO) serves as a public repository for
+a wide range of high-throughput experimental data. These data include
+single and dual channel microarray-based experiments measuring mRNA,
+genomic DNA, and protein abundance, as well as non-array techniques such
+as serial analysis of gene expression (SAGE), mass spectrometry
+proteomic data, and high-throughput sequencing data.
 
 At the most basic level of organization of GEO, there are four basic
 entity types. The first three (Sample, Platform, and Series) are
 supplied by users; the fourth, the dataset, is compiled and curated by
 GEO staff from the user-submitted data. More information is available in
-the [GEO site](https://www.ncbi.nlm.nih.gov/geo/info/overview.html) and in the document [Analisis_de_datos_omicos-Ejemplo_0-Microarrays](https://github.com/ASPteaching/Analisis_de_datos_omicos-Ejemplo_0-Microarrays) available in github.
+the [GEO site](https://www.ncbi.nlm.nih.gov/geo/info/overview.html) and
+in the document
+[Analisis_de_datos_omicos-Ejemplo_0-Microarrays](https://github.com/ASPteaching/Analisis_de_datos_omicos-Ejemplo_0-Microarrays)
+available in github.
 
 Data can be downloaded from GEO in a wide variety of formats and using a
 variety of mechanisms. See the download page in [this
@@ -460,7 +471,9 @@ Here we only describe how to download a datset using either its series
 ("GSExxx") or its Dataset ("GDSxxx") identifier.
 
 In the following lines we illustrate how to get the data for this
-example using the dataset used in the case study [Analisis_de_datos_omicos-Ejemplo_0-Microarrays](https://github.com/ASPteaching/Analisis_de_datos_omicos-Ejemplo_0-Microarrays), avilable from github.
+example using the dataset used in the case study
+[Analisis_de_datos_omicos-Ejemplo_0-Microarrays](https://github.com/ASPteaching/Analisis_de_datos_omicos-Ejemplo_0-Microarrays),
+avilable from github.
 
 As can be seen there the the dataset has the following identifiers:
 
@@ -468,10 +481,10 @@ As can be seen there the the dataset has the following identifiers:
 -   Dataset accesion ID for : GDS4155
 -   Plattform accession ID : GPL6246
 
-### Downloading a dataset in GSE format
+## Downloading a dataset in GSE format
 
-Getting a series dataset from GEO is straightforward. There is only one command
-that is needed: `getGEO`.
+Getting a series dataset from GEO is straightforward. There is only one
+command that is needed: `getGEO`.
 
 This function interprets its input (depending on the data format) to
 determine how to get the data from GEO and then parse the data into
@@ -485,7 +498,9 @@ require(GEOquery)
 gse <- getGEO("GSE27174", GSEMatrix=TRUE, AnnotGPL=TRUE)
 ```
 
-If the data format required is a "Series" (GSExxxx) the function returns a list, each of which elements is an expressionSet (this is so because sometimes a Series may have several collections of samples).
+If the data format required is a "Series" (GSExxxx) the function returns
+a list, each of which elements is an expressionSet (this is so because
+sometimes a Series may have several collections of samples).
 
 ```{r gseObject}
 class(gse)
@@ -495,8 +510,8 @@ gse[[1]]
 esetFromGEO <- gse[[1]]
 ```
 
-By creating the expressionSet automatically the slow process of creating the
-object step by step, as in the previous section, can be avoided.
+By creating the expressionSet automatically the slow process of creating
+the object step by step, as in the previous section, can be avoided.
 
 The expressioSet can now be used as usual:
 
@@ -504,15 +519,18 @@ The expressioSet can now be used as usual:
 head(exprs(esetFromGEO))
 ```
 
-We can look at the covariates information, but the phenoData object created automatically contains lot of repeated information. Eventually we can explore it and decide which columns we keep and whichs may be removed. For instance we keep the last two columns and see that column 39 contains the information that defines the groups.
+We can look at the covariates information, but the phenoData object
+created automatically contains lot of repeated information. Eventually
+we can explore it and decide which columns we keep and whichs may be
+removed. For instance we keep the last two columns and see that column
+39 contains the information that defines the groups.
 
-```{resetfromGEO2}
+```{r esetfromGEO2}
 colnames(pData(esetFromGEO))
 pData(esetFromGEO)[,39:40]
 ```
 
-
-### Downloading a dataset in GSD format
+## Downloading a dataset in GSD format
 
 Eventually, we may prefer to download the data in GSD format.
 
@@ -520,35 +538,56 @@ Eventually, we may prefer to download the data in GSD format.
 gds <- getGEO("GDS4155")
 ```
 
-The object that has been created now is not a list but it is of a special class "GDS"
+The object that has been created now is not a list but it is of a
+special class "GDS"
 
 ```{r gdsObject}
 class(gds)
 slotNames(gds)
 ```
 
-Class 'GDS' is comprised of a metadata header (taken nearly verbatim from the SOFT format header) and a GEODataTable. The GEODataTable has two simple parts, a Columns part which describes the column headers on the Table part. There is also a show method ("Meta") for the class.
+Class 'GDS' is comprised of a metadata header (taken nearly verbatim
+from the SOFT format header) and a GEODataTable. The GEODataTable has
+two simple parts, a Columns part which describes the column headers on
+the Table part. There is also a show method ("Meta") for the class.
 
 ```{r gdsMetaData}
 head(Meta(gds))
 ```
 
-The gds object can be turned into an expressionSet that contains the same information as in the previous case:
+The gds object can be turned into an expressionSet that contains the
+same information as in the previous case:
 
-```{r esetFromGDS} 
+```{r esetFromGDS}
 eset <- GDS2eSet(gds,do.log2=FALSE)
 eset
 ```
 
+# Exercises
 
-## Exercises
+1.  Select a *GEO (*Gene Expression Omnibus[) dataset
+    ](https://www.ncbi.nlm.nih.gov/geo/)from the list presented in the
+    "GEOdatasets_enhanced.xls" document available in the resources of
+    the activity.
 
-1.  With the expressionSet that you have created repeat the exploratory analysis available at [Analisis_de_datos_omicos-Ejemplo_0-Microarrays](https://github.com/ASPteaching/Analisis_de_datos_omicos-Ejemplo_0-Microarrays). <br> **The only difference with what is there (apart of the dataset) is that, instead of creating the dataset by reading the expression matrix from a file, you must use the one available in the expressionSet, that you can extract doing `x<- exprs(esetFromGEO)`**.
-
+2.  Read the data from GEO using the GEOquery package. This will provide
+    you with an expressionSet class object with the normalized data and
+    an additional table with information about the study.
+    
+3.  Determine the structure of the data (rows, columns) and the design
+    of the study (groups of samples or individuals, treatments if any,
+    etc.) that generated them.
+    -   The information of the experiment can also be downloaded from
+        GEO, either with GEOquery if you provide the dataset identifier
+        GDSxxxx or by accessing the study page.
 
 # References
 
-- Cui, Dapeng, K. J. Dougherty, DW Machacek, S. Hochman, and D. J Baro. 2006. “Divergence Between Motoneurons: Gene Expression Profiling Provides a Molecular Characterization of Functionally Discrete Somatic and Autonomic Motoneurons.” Physiol Genomics 24 (3): 276–89. https://doi.org/ 10.1152/physiolgenomics.00109.2005.
+-   Cui, Dapeng, K. J. Dougherty, DW Machacek, S. Hochman, and D. J
+    Baro. 2006. "Divergence Between Motoneurons: Gene Expression
+    Profiling Provides a Molecular Characterization of Functionally
+    Discrete Somatic and Autonomic Motoneurons." Physiol Genomics 24
+    (3): 276--89. https://doi.org/ 10.1152/physiolgenomics.00109.2005.
 
 -   Clough, E., & Barrett, T. (2016). The Gene Expression Omnibus
     Database. In Methods in molecular biology (Clifton, N.J.) (Vol.
@@ -558,41 +597,29 @@ eset
     Expression Omnibus (GEO) and BioConductor. Bioinformatics, 14,
     1846--1847.
 
--   W. Huber, V.J. Carey, R. Gentleman, ..., M. Morgan. Orchestrating high-throughput genomic analysis with Bioconductor.  Nature Methods, 2015:12, 115.
+-   W. Huber, V.J. Carey, R. Gentleman, ..., M. Morgan. Orchestrating
+    high-throughput genomic analysis with Bioconductor. Nature Methods,
+    2015:12, 115.
 
 -   Klaus, B., & Reisenauer, S. (2018). An end to end workflow for
-    differential gene expression using Affymetrix microarrays [version
-    2; referees: 2 approved]. F1000Research, 5, 1384.
-    
-  
-    <https://doi.org/10.12688/f1000research.8967.2>
+    differential gene expression using Affymetrix microarrays \[version
+    2; referees: 2 approved\]. F1000Research, 5, 1384.
 
+    <https://doi.org/10.12688/f1000research.8967.2>
 
 # Additional info
 
-```{r}
+```{r sessionInfo}
 sessionInfo()
 ```
 
-
-```{r eval=FALSE}
-# This document can be rendered either by clicking "Render" in Rstudio or
-# by running this chnk of code, which allows the rendering to be tunned 
-#using the quarto::quarto_render() function
-
-quarto::quarto_render(input="Introduction_2_Bioc_classes_4_microarrays.qmd",
-                      output_format="all")
-
+```{r creaIndex}
 # An "index.html" file is created to allow visualitzation in the web using github pages
-file.copy(from="Introduction_2_Bioc_classes_4_microarrays.html", to="index.html", overwrite=TRUE)
+file.copy(from="Introduction_2_Bioc_classes_4_tabular_data.html", to="index.html", overwrite=TRUE)
 ```
 
 ```{r eval=FALSE}
 # The R code for the document can be extracted from the document with the 
 # knitr::purl() command
-
-knitr::purl("Introduction_2_Bioc_classes_4_microarrays.qmd")
+# knitr::purl("Introduction_2_Bioc_classes_4_tabular_data.qmd")
 ```
-
-
-

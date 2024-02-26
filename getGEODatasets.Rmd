@@ -1,0 +1,113 @@
+---
+title: "testGEODatasets"
+author: "Alex Sanchez"
+html:
+    toc: true
+    theme: cosmo
+    html-math-method: katex
+    css: styles.css
+---
+
+```{r setup, echo=FALSE}
+library(knitr)
+library(rmdformats)
+
+## Global options
+options(max.print="75")
+opts_chunk$set(echo=TRUE,
+	             cache=FALSE,
+               prompt=FALSE,
+               tidy=TRUE,
+               comment=NA,
+               message=FALSE,
+               warning=FALSE)
+opts_knit$set(width=75)
+```
+
+## Presentation
+
+File `GEOdatasets.xls` contains a of references to Gene Expression Omnibus datasets that can be used for performing microarray analysis.
+
+```{r}
+library(readxl)
+GEOdatasets <- read_excel("GEOdatasets_updatedNov2022.xls")
+colnames(GEOdatasets)
+Series <- GEOdatasets["GEO Serie"]
+Datasets <- GEOdatasets["GEO Dataset"]
+```
+
+While thay have been tested along time it is good to check their availability and characteristics, which is what th current document does.
+
+```{r}
+library(Biobase)
+library(GEOquery)
+if(!file.exists("GEOSeries.Rda")){
+  gseList <- list()
+  for (i in 1:27){
+    gseList[i] <- getGEO(as.character(Series[i,1]), AnnotGPL=TRUE)
+    esetFromGEO <- gseList[[i]]
+    dim(exprs(esetFromGEO))
+    pData(esetFromGEO)
+  }
+  length(gseList)
+  names(gseList) <-Series[1:27,1]
+  save(gseList, file="GEOSeries.Rda")
+}
+```
+
+An alternative approach allowing to collect more and better iinformation is to rely on GDS information
+
+```{r}
+gdsList <- list()
+# infoList <- list()
+infoDatasets<- data.frame (Dataset=character(),
+                           Platform=character(),
+                           NumSamples=integer(),
+                           colsPData = integer(),
+                           col1Name = character(),
+                           col1Distinct=integer(),
+                           col2Name = character(),
+                           col2Distinct=integer())
+for (i in 1:27){
+  GDSName <- as.character(Datasets[i,1])
+  myGDS <- getGEO(GDSName, AnnotGPL=TRUE)
+  gdsList[i]  <- myEset<- GDS2eSet(myGDS)
+  phenoDat <- pData(myEset) # pData(gdsList[[i]]) 
+  Platform <- Meta(myGDS)$platform
+  cat("\n", i, GDSName, dim(phenoDat),  "\n" )
+  cat("====================\n")
+  print(head(phenoDat))
+  info <- c(GDSName, Platform, 
+            nrow(phenoDat), ncol(phenoDat),
+            colnames(phenoDat)[2], length(unique(phenoDat[,2])),
+            colnames(phenoDat)[3], length(unique(phenoDat[,3])))
+  infoDatasets[i,] <- info
+  # infoDF <- data.frame(matrix(rep(NA, 2*length(Meta(myGDS))), ncol=2))
+  # for (i in 1:length(Meta(myGDS))){
+  #   infoDF[i,1] =names(Meta(myGDS))[i]
+  #   infoDF[i,2] =Meta(myGDS)[i]
+  # }
+  # colnames(infoDF) = c("Campo", "Descripción")
+  # infoList[i]<- infoDF
+}
+length(gdsList)
+names(gdsList) <-Datasets[1:27,1]
+# names(infoList) <-Datasets[1:27,1]
+save(gdsList, infoDatasets, file="GEODatasets.Rda")
+```
+
+We can use the information in `infoList` to enhance the information about the datasets.
+
+```{r eval=FALSE}
+source("https://raw.githubusercontent.com/alexsanchezpla/scripts/master/usefulFunctions/loadFromFileByName.R")
+if (!exists("infoDatasets")) 
+  infoDatasets<- loadFromFileByName (fileName="GEODatasets.Rda", aVarName="infoDatasets")
+```
+
+```{r}
+library(dplyr)
+GEODat_Enhanced <- GEOdatasets %>% 
+  inner_join(infoDatasets, 
+             by= c("GEO Dataset"= "Dataset"))
+openxlsx::write.xlsx(GEODat_Enhanced, "GEODataset_Enhanced.xlsx")
+```

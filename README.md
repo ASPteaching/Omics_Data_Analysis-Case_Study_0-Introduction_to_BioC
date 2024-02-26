@@ -6,5 +6,5 @@ It is based on the vignettes() of two packages `ExpressionSet` and `geoQuery` wh
 
 There are different ways to use the repository
 
-- Download or clone the repository, so you can access directly to all files and re-create the document if you wisht to.
-- Access directly to the output in [this link](https://aspteaching.github.io/Omics_Data_Analysis-Case_Study_0-Introduction_to_BioC/) (*not working yet*)
+- Download or clone the repository, so you can access directly to all files and re-create the document if you wish to.
+- Access directly to the output in [this link](https://aspteaching.github.io/Omics_Data_Analysis-Case_Study_0-Introduction_to_BioC/).
