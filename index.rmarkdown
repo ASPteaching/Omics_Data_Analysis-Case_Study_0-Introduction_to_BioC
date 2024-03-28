@@ -32,6 +32,8 @@ editor:
     wrap: 72
 ---
 
+
+
 # Introduction
 
 Many omics data, once they have been pre-processed, can be stored as
@@ -106,17 +108,25 @@ Bioconductor classes: <tt>ExpressionSet</tt>. It was originally intended
 to contain microarray data and information on the study that generated
 them and it has become a standard for similar data structures.
 
+
+
 ```{r loadBiobase}
 library(Biobase)
 ```
+
+
 
 Figure @ref(ExpressionSet) shows the structure of this class. It is
 essentially a <em>container</em> that has distinct slots to store some
 of the most usual components in an omics dataset.
 
+
+
 ```{r ExpressionSet, fig.cap="Structure of the <tt>ExpressionSet</tt> class, showing its slots and their meaning. Reproduced from Klaus, B., & Reisenauer, S. (2018)", echo=FALSE}
 knitr::include_graphics("images/Structure-of-Bioconductors-ExpressionSet-class.png")
 ```
+
+
 
 The advantage of the OOP approach is that, if a new type of omics data
 needs a similar but different structure it can be created using
@@ -145,11 +155,15 @@ dataset that consists of the following:
     the study, such as the authors and their contact details or the
     title and url of the study that originated them.
 
+
+
 ```{r simulateData}
 expressionValues <- matrix (rnorm (300), nrow=30)
 colnames(expressionValues) <- paste0("sample",1:10)
 head(expressionValues)
 ```
+
+
 
 **VERY IMPORTANT**: To create the ExpressionSet the following has to be
 verified:
@@ -161,6 +175,8 @@ verified:
 
 In this example it is saved in the variable `sampleNames` but this field
 will be used as the *name of the rows*, not as another column
+
+
 
 ```{r simulateCovariates}
 targets <- data.frame(sampleNames = paste0("sample",1:10),
@@ -183,6 +199,8 @@ myInfo=list(myName="Alex Sanchez",
 show(myInfo)
 ```
 
+
+
 Having data stored in this way is usually enough for most of the analyes
 we may want to do. The only unconvenient comes from the fact that the
 information about the same individuals is in separate R objects so that,
@@ -193,6 +211,8 @@ For example if we want to make a principal components analysis and plot
 the groups by treatment we need to use both
 `expressionValues" and`targets."
 
+
+
 ```{r PCA1}
 pcs <- prcomp(expressionValues)
 names(pcs)
@@ -202,9 +222,13 @@ plot(pcs$rotation[,1], pcs$rotation[,2],
 text(pcs$rotation[,1], pcs$rotation[,2], targets$group, cex=0.8, pos=3)
 ```
 
+
+
 Or, if we sort the genes from most to least variable and whant to see
 which are the top variable genes. We need to use both objects
 `expressionValues" and`myGenes" assuming they are well linked:
+
+
 
 ```{r sortGenesByVar}
 variab <- apply(expressionValues, 1, sd)
@@ -213,14 +237,20 @@ head(variab[order(variab, decreasing=TRUE)])
 head(orderedGenes)
 ```
 
+
+
 Imagine we are informed that individual has to be removed. We have to do
 it in "expressionValues" and "targets".
+
+
 
 ```{r subsetExpressions}
 newExpress<- expressionValues[,-9]
 newTargets <- targets[-9,]
 wrongNewTargets <- targets [-10,]
 ```
+
+
 
 It is relatively easy to make an unnoticeable mistake in removing
 unrelated values from the data matrix and the targets table. If instead
@@ -254,11 +284,15 @@ The main element, and indeed the only one to be provided to create an
 purposes it can be seen as a matrix with as many rows as genes or
 generically "features" and as many columns as samples or individuals.
 
+
+
 ```{r creaExpressionSet1}
 myEset <- ExpressionSet(expressionValues)
 class(myEset)
 show(myEset)
 ```
+
+
 
 ### Information about covariates
 
@@ -273,6 +307,8 @@ besides the short column names, longer labels to describe them better.
 The information about covariates, contained in an instance of class
 <tt>AnnotatedDataFrame</tt>, is stored in the slot <tt>phenoData</tt>.
 
+
+
 ```{r AnnotatedDataFrame2}
 columnDesc <-  data.frame(labelDescription= c("Treatment/Control", 
                                                 "Age at disease onset", 
@@ -281,15 +317,21 @@ myAnnotDF <- new("AnnotatedDataFrame", data=targets, varMetadata= columnDesc)
 show(myAnnotDF)
 ```
 
+
+
 Notice that we have not included a label for sample names because this
 information is not a column of the `phenoData` object.
 
 Once we have an <tt>AnnotatedDataFrame</tt> we can add it to the
 <tt>ExpressionSet</tt>
 
+
+
 ```{r addAnnotatedDataFrame}
 phenoData(myEset) <- myAnnotDF
 ```
+
+
 
 Alternatively we could have created the<tt>AnnotatedDataFrame</tt>
 object first and then create the <tt>ExpressionSet</tt> object with both
@@ -297,10 +339,14 @@ the expression values and the covariates. In this case it would be
 required that the expression matrix colum names are the same as the
 targets row names.
 
+
+
 ```{r creaEset2}
 myEset <- ExpressionSet(assayData=expressionValues, phenoData=myAnnotDF)
 show(myEset)
 ```
+
+
 
 ### Adding information about features
 
@@ -317,12 +363,16 @@ store and manage jointly with the other values. ALternatively we can
 simple store the names of the features using a character vector in the
 slot <tt>featureNames</tt>.
 
+
+
 ```{r creaEset3}
 myEset <- ExpressionSet(assayData=expressionValues,
                         phenoData=myAnnotDF,
                         featureNames =myGenes)
 # show(myEset)
 ```
+
+
 
 ### Storing information about the experiment
 
@@ -335,6 +385,8 @@ About a Microarray Experiment" see
 
 This is useful information but it is clearly optional for data analysis.
 
+
+
 ```{r label=MIAME}
 myDesc <- new("MIAME", name= myInfo[["myName"]],
             lab= myInfo[["myLab"]],
@@ -343,8 +395,12 @@ myDesc <- new("MIAME", name= myInfo[["myName"]],
 print(myDesc)
 ```
 
+
+
 Again we could add this object to the <tt>ExpressionSet</tt> or use it
 when creating it from scratch.
+
+
 
 ```{r creaEset4}
 myEset <- ExpressionSet(assayData=expressionValues,
@@ -353,6 +409,8 @@ myEset <- ExpressionSet(assayData=expressionValues,
                         experimentData = myDesc)
 # show(myEset)
 ```
+
+
 
 ## Using objects of class <tt>ExpressionSet</tt>
 
@@ -379,6 +437,8 @@ need to use two accessors: <tt>phenoData</tt> to access the
 access the <tt>data</tt> slot in it. It is strange until you get used to
 it!
 
+
+
 ```{r usingExpressionSets}
 dim(exprs(myEset))
 class(phenoData(myEset))
@@ -386,6 +446,8 @@ class(pData(phenoData(myEset)))
 head(pData(phenoData(myEset)))
 head(pData(myEset))
 ```
+
+
 
 ### Subsetting `ExpressionSets`
 
@@ -401,6 +463,8 @@ need to know how the object is represented "under-the-hood". In effect,
 we can treat the <tt>ExpressionSet</tt> as if it is a standard R data
 frame
 
+
+
 ```{r smallEset}
 smallEset <- myEset[1:15,c(1:3,6:8)]
 dim(exprs(smallEset))
@@ -409,15 +473,21 @@ head(pData(smallEset))
 all(colnames(exprs(smallEset))==rownames(pData(smallEset)))
 ```
 
+
+
 We can for instance create a new dataset for all individuals younger
 than 30 or for all females without having to worry about doing it in
 every component.
+
+
 
 ```{r creaEset5}
 youngEset <- myEset[,pData(myEset)$age<30]
 dim(exprs(youngEset))
 head(pData(youngEset))
 ```
+
+
 
 ## Exercises
 
@@ -491,6 +561,8 @@ This function interprets its input (depending on the data format) to
 determine how to get the data from GEO and then parse the data into
 useful R data structures.
 
+
+
 ```{r GEOquery}
 if (!require(GEOquery)) {
   BiocManager::install("GEOquery")
@@ -499,9 +571,13 @@ require(GEOquery)
 gse <- getGEO("GSE27174", GSEMatrix=TRUE, AnnotGPL=TRUE)
 ```
 
+
+
 If the data format required is a "Series" (GSExxxx) the function returns
 a list, each of which elements is an expressionSet (this is so because
 sometimes a Series may have several collections of samples).
+
+
 
 ```{r gseObject}
 class(gse)
@@ -511,14 +587,20 @@ gse[[1]]
 esetFromGEO <- gse[[1]]
 ```
 
+
+
 By creating the expressionSet automatically the slow process of creating
 the object step by step, as in the previous section, can be avoided.
 
 The expressioSet can now be used as usual:
 
+
+
 ```{r esetFromGEO}
 head(exprs(esetFromGEO))
 ```
+
+
 
 We can look at the covariates information, but the phenoData object
 created automatically contains lot of repeated information. Eventually
@@ -526,43 +608,63 @@ we can explore it and decide which columns we keep and whichs may be
 removed. For instance we keep the last two columns and see that column
 39 contains the information that defines the groups.
 
+
+
 ```{r esetfromGEO2}
 colnames(pData(esetFromGEO))
 pData(esetFromGEO)[,39:40]
 ```
 
+
+
 ## Downloading a dataset in GSD format
 
 Eventually, we may prefer to download the data in GSD format.
+
+
 
 ```{r getGSD}
 gds <- getGEO("GDS4155")
 ```
 
+
+
 The object that has been created now is not a list but it is of a
 special class "GDS"
+
+
 
 ```{r gdsObject}
 class(gds)
 slotNames(gds)
 ```
 
+
+
 Class 'GDS' is comprised of a metadata header (taken nearly verbatim
 from the SOFT format header) and a GEODataTable. The GEODataTable has
 two simple parts, a Columns part which describes the column headers on
 the Table part. There is also a show method ("Meta") for the class.
 
+
+
 ```{r gdsMetaData}
 head(Meta(gds))
 ```
 
+
+
 The gds object can be turned into an expressionSet that contains the
 same information as in the previous case:
+
+
 
 ```{r esetFromGDS}
 eset <- GDS2eSet(gds,do.log2=FALSE)
 eset
 ```
+
+
 
 # Exercises
 
@@ -610,6 +712,8 @@ eset
 
 # Additional info
 
+
+
 ```{r sessionInfo}
 sessionInfo()
 ```
@@ -624,3 +728,4 @@ file.copy(from="Introduction_2_Bioc_classes_4_tabular_data.html", to="index.html
 # knitr::purl() command
 # knitr::purl("Introduction_2_Bioc_classes_4_tabular_data.qmd")
 ```
+

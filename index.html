@@ -9,7 +9,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes" />
 
 <meta name="author" content="Alex Sanchez-Pla" />
-<meta name="dcterms.date" content="2024-02-26" />
+<meta name="dcterms.date" content="2024-03-28" />
 
 <title>Bioconductor classes for working   with microarrays or similar data</title>
 <style>
@@ -92,7 +92,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
     <div>
     <div class="quarto-title-meta-heading">Published</div>
     <div class="quarto-title-meta-contents">
-      <p class="date">February 26, 2024</p>
+      <p class="date">March 28, 2024</p>
     </div>
   </div>
   
@@ -236,20 +236,20 @@ Attaching package: &#39;BiocGenerics&#39;</code></pre>
 <span id="cb7-2"><a href="#cb7-2" aria-hidden="true" tabindex="-1"></a><span class="fu">colnames</span>(expressionValues) <span class="ot">&lt;-</span> <span class="fu">paste0</span>(<span class="st">&quot;sample&quot;</span>,<span class="dv">1</span><span class="sc">:</span><span class="dv">10</span>)</span>
 <span id="cb7-3"><a href="#cb7-3" aria-hidden="true" tabindex="-1"></a><span class="fu">head</span>(expressionValues)</span></code></pre></div>
 <div class="cell-output cell-output-stdout">
-<pre><code>        sample1    sample2    sample3    sample4    sample5     sample6
-[1,] -1.0367756  0.5534451  0.3566816 -0.4185847  2.0825035 -1.24371098
-[2,] -0.4654955 -0.2205887 -2.0055598  1.1762843 -0.6358437 -0.09397917
-[3,]  0.2255715 -0.5314050 -1.2997881 -0.8634531  0.1088527  0.80262469
-[4,]  0.1844888 -0.2622930  0.2801035 -0.4659153 -0.1888708 -0.81302578
-[5,]  0.1857988 -0.3878573 -0.2561506 -0.1057488  0.6466801  0.68842123
-[6,]  1.4360671  1.9442510 -0.5382986  1.0319244 -0.2765539  2.10056940
-         sample7    sample8    sample9   sample10
-[1,]  0.01983671  1.0067435 -0.2122809  0.9433828
-[2,] -0.62222452  0.7448836 -0.9931220  0.8100228
-[3,]  1.00492735  1.1429374  0.1914273 -0.7276789
-[4,] -0.07562249  1.1905609 -0.6995081  0.2779177
-[5,]  1.03104287  0.8986999  1.0144999  0.3541719
-[6,]  0.28327025 -1.2816869 -0.7040610 -0.1456624</code></pre>
+<pre><code>         sample1    sample2     sample3    sample4    sample5    sample6
+[1,] -1.79178318  0.3647708  1.06828944  0.8071615  0.2694693  2.1486020
+[2,] -1.11457291  2.1863533  0.59926802  0.2800048 -0.1337830  0.4469043
+[3,]  0.54410546 -0.3089568 -1.39095723 -0.4793362 -0.3394864  1.9156204
+[4,] -0.05679919  0.8054591 -0.07347829  1.5515076  0.1411121 -2.4126758
+[5,] -0.27897274  0.2667203  0.65244729  0.9092124  0.4477909  0.8531942
+[6,] -0.62183797  0.9379370  0.08276914 -0.3436316  0.1730609  2.0550911
+         sample7    sample8     sample9   sample10
+[1,] -1.49156854 -0.5146063 -0.08453896  0.9277924
+[2,] -1.57358546 -0.8892892  0.40470823  1.1063466
+[3,] -3.14163786 -0.6630793  0.19163676  0.2276276
+[4,]  0.02071324  0.6799446 -0.82287280 -0.9756018
+[5,] -0.97863706 -2.0371544 -1.20788557  0.4636413
+[6,] -0.55963070  0.5038611  1.02490765 -1.8806036</code></pre>
 </div>
 </div>
 <p><strong>VERY IMPORTANT</strong>: To create the ExpressionSet the following has to be verified:</p>
@@ -267,16 +267,16 @@ Attaching package: &#39;BiocGenerics&#39;</code></pre>
 <span id="cb9-6"><a href="#cb9-6" aria-hidden="true" tabindex="-1"></a><span class="fu">head</span>(targets, <span class="at">n=</span><span class="dv">10</span>)</span></code></pre></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>         group age    sex
-sample1   CTL1  30 Female
-sample2   CTL2  23 Female
-sample3   CTL3  25   Male
-sample4   CTL4  33 Female
-sample5   CTL5  28 Female
-sample6    TR1  48   Male
-sample7    TR2  30   Male
-sample8    TR3  33 Female
-sample9    TR4  34   Male
-sample10   TR5  23 Female</code></pre>
+sample1   CTL1  29 Female
+sample2   CTL2  30   Male
+sample3   CTL3  30   Male
+sample4   CTL4  23 Female
+sample5   CTL5  30   Male
+sample6    TR1  38   Male
+sample7    TR2  22   Male
+sample8    TR3  28 Female
+sample9    TR4  32   Male
+sample10   TR5  30 Female</code></pre>
 </div>
 </div>
 <div class="cell">
@@ -314,7 +314,7 @@ $myTitle
 <div class="cell-output-display">
 <div>
 <figure>
-<p><img src="Introduction_2_Bioc_classes_4_tabular_data_files/figure-html/PCA1-1.png" class="img-fluid" width="672" /></p>
+<p><img src="index_files/figure-html/PCA1-1.png" class="img-fluid" width="672" /></p>
 </figure>
 </div>
 </div>
@@ -324,7 +324,7 @@ $myTitle
 <div class="cell-output-display">
 <div>
 <figure>
-<p><img src="Introduction_2_Bioc_classes_4_tabular_data_files/figure-html/PCA1-2.png" class="img-fluid" width="672" /></p>
+<p><img src="index_files/figure-html/PCA1-2.png" class="img-fluid" width="672" /></p>
 </figure>
 </div>
 </div>
@@ -335,11 +335,11 @@ $myTitle
 <span id="cb18-2"><a href="#cb18-2" aria-hidden="true" tabindex="-1"></a>orderedGenes <span class="ot">&lt;-</span> myGenes[<span class="fu">order</span>(variab, <span class="at">decreasing=</span><span class="cn">TRUE</span>)]</span>
 <span id="cb18-3"><a href="#cb18-3" aria-hidden="true" tabindex="-1"></a><span class="fu">head</span>(variab[<span class="fu">order</span>(variab, <span class="at">decreasing=</span><span class="cn">TRUE</span>)])</span></code></pre></div>
 <div class="cell-output cell-output-stdout">
-<pre><code>[1] 1.356148 1.175853 1.132048 1.129592 1.128976 1.104185</code></pre>
+<pre><code>[1] 1.490262 1.320940 1.314557 1.196881 1.113559 1.098817</code></pre>
 </div>
 <div class="sourceCode" id="cb20"><pre class="sourceCode r cell-code"><code class="sourceCode r"><span id="cb20-1"><a href="#cb20-1" aria-hidden="true" tabindex="-1"></a><span class="fu">head</span>(orderedGenes)</span></code></pre></div>
 <div class="cell-output cell-output-stdout">
-<pre><code>[1] &quot;gene14&quot; &quot;gene6&quot;  &quot;gene22&quot; &quot;gene12&quot; &quot;gene18&quot; &quot;gene19&quot;</code></pre>
+<pre><code>[1] &quot;gene23&quot; &quot;gene20&quot; &quot;gene3&quot;  &quot;gene1&quot;  &quot;gene2&quot;  &quot;gene4&quot; </code></pre>
 </div>
 </div>
 <p>Imagine we are informed that individual has to be removed. We have to do it in “expressionValues” and “targets”.</p>
@@ -491,22 +491,22 @@ attr(,&quot;package&quot;)
 <div class="sourceCode" id="cb42"><pre class="sourceCode r cell-code"><code class="sourceCode r"><span id="cb42-1"><a href="#cb42-1" aria-hidden="true" tabindex="-1"></a><span class="fu">head</span>(<span class="fu">pData</span>(<span class="fu">phenoData</span>(myEset)))</span></code></pre></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>        group age    sex
-sample1  CTL1  30 Female
-sample2  CTL2  23 Female
-sample3  CTL3  25   Male
-sample4  CTL4  33 Female
-sample5  CTL5  28 Female
-sample6   TR1  48   Male</code></pre>
+sample1  CTL1  29 Female
+sample2  CTL2  30   Male
+sample3  CTL3  30   Male
+sample4  CTL4  23 Female
+sample5  CTL5  30   Male
+sample6   TR1  38   Male</code></pre>
 </div>
 <div class="sourceCode" id="cb44"><pre class="sourceCode r cell-code"><code class="sourceCode r"><span id="cb44-1"><a href="#cb44-1" aria-hidden="true" tabindex="-1"></a><span class="fu">head</span>(<span class="fu">pData</span>(myEset))</span></code></pre></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>        group age    sex
-sample1  CTL1  30 Female
-sample2  CTL2  23 Female
-sample3  CTL3  25   Male
-sample4  CTL4  33 Female
-sample5  CTL5  28 Female
-sample6   TR1  48   Male</code></pre>
+sample1  CTL1  29 Female
+sample2  CTL2  30   Male
+sample3  CTL3  30   Male
+sample4  CTL4  23 Female
+sample5  CTL5  30   Male
+sample6   TR1  38   Male</code></pre>
 </div>
 </div>
 </section>
@@ -527,12 +527,12 @@ sample6   TR1  48   Male</code></pre>
 <div class="sourceCode" id="cb50"><pre class="sourceCode r cell-code"><code class="sourceCode r"><span id="cb50-1"><a href="#cb50-1" aria-hidden="true" tabindex="-1"></a><span class="fu">head</span>(<span class="fu">pData</span>(smallEset))</span></code></pre></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>        group age    sex
-sample1  CTL1  30 Female
-sample2  CTL2  23 Female
-sample3  CTL3  25   Male
-sample6   TR1  48   Male
-sample7   TR2  30   Male
-sample8   TR3  33 Female</code></pre>
+sample1  CTL1  29 Female
+sample2  CTL2  30   Male
+sample3  CTL3  30   Male
+sample6   TR1  38   Male
+sample7   TR2  22   Male
+sample8   TR3  28 Female</code></pre>
 </div>
 <div class="sourceCode" id="cb52"><pre class="sourceCode r cell-code"><code class="sourceCode r"><span id="cb52-1"><a href="#cb52-1" aria-hidden="true" tabindex="-1"></a><span class="fu">all</span>(<span class="fu">colnames</span>(<span class="fu">exprs</span>(smallEset))<span class="sc">==</span><span class="fu">rownames</span>(<span class="fu">pData</span>(smallEset)))</span></code></pre></div>
 <div class="cell-output cell-output-stdout">
@@ -548,11 +548,11 @@ sample8   TR3  33 Female</code></pre>
 </div>
 <div class="sourceCode" id="cb56"><pre class="sourceCode r cell-code"><code class="sourceCode r"><span id="cb56-1"><a href="#cb56-1" aria-hidden="true" tabindex="-1"></a><span class="fu">head</span>(<span class="fu">pData</span>(youngEset))</span></code></pre></div>
 <div class="cell-output cell-output-stdout">
-<pre><code>         group age    sex
-sample2   CTL2  23 Female
-sample3   CTL3  25   Male
-sample5   CTL5  28 Female
-sample10   TR5  23 Female</code></pre>
+<pre><code>        group age    sex
+sample1  CTL1  29 Female
+sample4  CTL4  23 Female
+sample7   TR2  22   Male
+sample8   TR3  28 Female</code></pre>
 </div>
 </div>
 </section>
@@ -760,7 +760,7 @@ $institute
 <div class="sourceCode" id="cb87"><pre class="sourceCode r cell-code"><code class="sourceCode r"><span id="cb87-1"><a href="#cb87-1" aria-hidden="true" tabindex="-1"></a>eset <span class="ot">&lt;-</span> <span class="fu">GDS2eSet</span>(gds,<span class="at">do.log2=</span><span class="cn">FALSE</span>)</span></code></pre></div>
 <div class="cell-output cell-output-stderr">
 <pre><code>Using locally cached version of GPL6246 found here:
-C:\Users\asanchez\AppData\Local\Temp\RtmponSYSP/GPL6246.annot.gz </code></pre>
+C:\Users\Usuario\AppData\Local\Temp\RtmpOaCFZR/GPL6246.annot.gz </code></pre>
 </div>
 <div class="sourceCode" id="cb89"><pre class="sourceCode r cell-code"><code class="sourceCode r"><span id="cb89-1"><a href="#cb89-1" aria-hidden="true" tabindex="-1"></a>eset</span></code></pre></div>
 <div class="cell-output cell-output-stdout">
@@ -835,21 +835,21 @@ loaded via a namespace (and not attached):
  [1] limma_3.56.2      jsonlite_1.8.7    dplyr_1.1.3       compiler_4.3.0   
  [5] tidyselect_1.2.0  xml2_1.3.5        tidyr_1.3.0       png_0.1-8        
  [9] yaml_2.3.7        fastmap_1.1.1     readr_2.1.4       R6_2.5.1         
-[13] generics_0.1.3    curl_5.0.2        knitr_1.43        htmlwidgets_1.6.2
+[13] generics_0.1.3    curl_5.1.0        knitr_1.45        htmlwidgets_1.6.2
 [17] tibble_3.2.1      pillar_1.9.0      tzdb_0.4.0        R.utils_2.12.2   
-[21] rlang_1.1.1       utf8_1.2.3        xfun_0.40         cli_3.6.1        
-[25] withr_2.5.0       magrittr_2.0.3    digest_0.6.33     rstudioapi_0.15.0
+[21] rlang_1.1.1       utf8_1.2.4        xfun_0.39         cli_3.6.1        
+[25] withr_2.5.1       magrittr_2.0.3    digest_0.6.31     rstudioapi_0.15.0
 [29] hms_1.1.3         lifecycle_1.0.3   R.oo_1.25.0       R.methodsS3_1.8.2
-[33] vctrs_0.6.3       evaluate_0.21     glue_1.6.2        data.table_1.14.8
-[37] fansi_1.0.4       rmarkdown_2.24    purrr_1.0.2       tools_4.3.0      
-[41] pkgconfig_2.0.3   htmltools_0.5.6  </code></pre>
+[33] vctrs_0.6.4       evaluate_0.22     glue_1.6.2        data.table_1.14.8
+[37] fansi_1.0.5       rmarkdown_2.25    purrr_1.0.2       tools_4.3.0      
+[41] pkgconfig_2.0.3   htmltools_0.5.5  </code></pre>
 </div>
 </div>
 <div class="cell">
 <div class="sourceCode" id="cb93"><pre class="sourceCode r cell-code"><code class="sourceCode r"><span id="cb93-1"><a href="#cb93-1" aria-hidden="true" tabindex="-1"></a><span class="co"># An &quot;index.html&quot; file is created to allow visualitzation in the web using github pages</span></span>
 <span id="cb93-2"><a href="#cb93-2" aria-hidden="true" tabindex="-1"></a><span class="fu">file.copy</span>(<span class="at">from=</span><span class="st">&quot;Introduction_2_Bioc_classes_4_tabular_data.html&quot;</span>, <span class="at">to=</span><span class="st">&quot;index.html&quot;</span>, <span class="at">overwrite=</span><span class="cn">TRUE</span>)</span></code></pre></div>
 <div class="cell-output cell-output-stdout">
-<pre><code>[1] TRUE</code></pre>
+<pre><code>[1] FALSE</code></pre>
 </div>
 </div>
 <div class="cell">
